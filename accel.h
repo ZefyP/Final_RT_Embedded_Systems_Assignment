@@ -10,12 +10,21 @@ enum Orientation {
   DOWN_LED4
 };
 
-// Function to initialize accelerometer
-void initAccelerometer();
-
 // Function to get current board orientation
 Orientation getOrientation();
 
+
+
+// // Function to initialise accelerometer
+// void initAccelerometer() {
+//   // Enable clock for GPIOE peripheral
+//   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
+
+//   // Configure GPIOE pins 0, 1, and 3 as output
+//   GPIOE->MODER |= (GPIO_MODER_MODER0_0 |
+//                    GPIO_MODER_MODER1_0 |
+//                    GPIO_MODER_MODER3_0);
+// }
 
 // Initialise accelerometer
 void initAccelerometer()
@@ -53,6 +62,17 @@ accelerometer_data read_accelerometer()
     data.z = (float)data.raw[2] / 16384.0;
     return data; 
 }
+
+
+// Function to get orientation of board
+int getOrientation(int x, int y, int z) {
+  if (x > DEADZONE) return 0;
+  else if (x < -DEADZONE) return 1;
+  else if (y > DEADZONE) return 2;
+  else if (y < -DEADZONE) return 3;
+  else return -1;
+}
+
 
 
 

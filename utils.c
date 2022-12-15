@@ -1,20 +1,9 @@
-#ifndef UTILS_H
-#define UTILS_H
-
-
 // Include the necessary libraries (needing implementation)
 
-#include "accel.h""  // Header file for accelerometer library
+#include "utils.h"
+#include "accel.h" // Header file for accelerometer library
 #include "audio.h"  // Header file for audio library (assuming this is the library for the CS43L22)
-
 #include <stdint.h>
-
-// LED states
-#define LED1 (1 << 0)
-#define LED2 (1 << 1)
-#define LED3 (1 << 2)
-#define LED4 (1 << 3)
-
 
 
 // Function to initialise LED
@@ -37,11 +26,11 @@ void setLEDState(uint8_t state) {
                                 GPIO_ODR_ODR_13 |
                                 GPIO_ODR_ODR_14 |
                                 GPIO_ODR_ODR_15)) |
-                (state << 12);
+                                 (state << 12);
 }
 
 
-// Function to initialize button
+// Function to initialise button
 void initButton() {
   // Enable clock for GPIOA peripheral
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
@@ -62,20 +51,3 @@ bool isButtonClicked() {
   }
   return false;
 }
-
-
-// Function to initialize accelerometer
-void initAccelerometer() {
-  // Enable clock for GPIOE peripheral
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
-
-  // Configure GPIOE pins 0, 1, and 3 as output
-  GPIOE->MODER |= (GPIO_MODER_MODER0_0 |
-                   GPIO_MODER_MODER1_0 |
-                   GPIO_MODER_MODER3_0);
-}
-
-
-
-
-#endif  // UTILS_H

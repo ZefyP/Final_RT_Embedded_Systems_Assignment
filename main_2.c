@@ -1,6 +1,6 @@
 // This is an alternative approach that is focused ontask management / without yet using RTOS.
 
-// The code initializes the necessary peripherals and sets up global variables to track the current mode and state of the system. 
+// The code initialises the necessary peripherals and sets up global variables to track the current mode and state of the system. 
 // The handleModeChange function checks if the button is clicked and switches the mode accordingly. The handleTiltSwitchMode function 
 // uses the accelerometer to determine the current orientation of the board and updates the LED state accordingly. 
 // The handlePauseMode function implements the LED blinking pattern and plays a beep through the audio output in the pause mode. 
@@ -8,8 +8,8 @@
 // This is just one possible way to implement the required functionality. There may be other approaches that can also be used to achieve 
 // the same result.
 
-
-#include "utils.h"
+#include "stm32f4xx.h"  // Header file for STM32F4xx devices
+#include "utils.h"      // Header file for utilities of the system
 
 // Global variables to track current mode and state of the system
 enum Mode { TILT_SWITCH, PAUSE };
@@ -19,7 +19,7 @@ State state = HORIZONTAL;
 
 // Function to initialise the system
 void setup() {
-  // Initialize LEDs, button, accelerometer, and audio
+  // Initialise LEDs, button, accelerometer, and audio
   initLEDs();
   initButton();
   initAccelerometer();
