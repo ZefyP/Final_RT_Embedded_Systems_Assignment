@@ -13,12 +13,12 @@ void Initialise_LED_and_button(void){
 }
 
 // Definition for the function to blink the LED
-void Blink_LED(uint8_t LED_state){
+void Blink_LED(uint8_t LED_state,uint8_t LED_colour){
 	if(LED_state == 1){ // Checks to see if the request is to turn the LED on or off
-			GPIOD->BSRR = 1<<12; // Turn on the green LED
+			GPIOD->BSRR = 1<<LED_colour; // Turn on the LED
 	}
 	else{
-			GPIOD->BSRR = 1<<(12+16); // Turn off the green LED
+			GPIOD->BSRR = 1<<(LED_colour+16); // Turn off the LED
 	}
 }
 
