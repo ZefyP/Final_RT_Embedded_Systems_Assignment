@@ -14,14 +14,14 @@ int main (void) {
 			/* Initialise any peripherals or system components */
 			
 			// Initialize the LED
-			Initialise_LED();
+			Initialise_LED_and_button();
 				
 				
 			/* Initialise any threads */
 			
-			// Initialise the main thread to blink the LED’s
+		// Initialise the main thread to blink the LED’s
 			Init_Blink_LED_Thread();
-				
+			Init_Button_Thread();
 				
 			osKernelStart (); // start thread execution
 				
