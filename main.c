@@ -7,9 +7,6 @@
 // switched from the tilt switch to the LED blinking mode.
 
 
-// Include the necessary libraries
-#include "utils.h"
-
 // Define the threshold angles for each LED
 #define LED1_THRESHOLD 10
 #define LED2_THRESHOLD 100

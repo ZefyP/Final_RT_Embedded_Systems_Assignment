@@ -1,6 +1,9 @@
 #ifndef ACCELEROMETER_H
 #define ACCELEROMETER_H
 
+
+int16_t x_accel, y_accel, z_accel;  // Variables to store accelerometer data
+
 // Enum for board orientation
 enum Orientation {
   HORIZONTAL,
