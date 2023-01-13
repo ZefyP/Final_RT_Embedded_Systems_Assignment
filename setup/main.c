@@ -1,21 +1,30 @@
-/*----------------------------------------------------------------------------
- * CMSIS-RTOS 'main' function template
- *---------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------
+* CMSIS-RTOS 'main' function - Blinky
+*-----------------------------------------------------------------------*/
+#define osObjectsPublic // Define objects in main module
+#include "osObjects.h" // RTOS object definitions
+#include "stm32f4xx.h"
+#include "my_defines.h"
+#include "Thread.h"
 
-#define osObjectsPublic                     // define objects in main module
-#include "osObjects.h"                      // RTOS object definitions
-
-
-/*
- * main: initialize and start the system
- */
 int main (void) {
-  osKernelInitialize ();                    // initialize CMSIS-RTOS
+	
+			osKernelInitialize (); //Initialize CMSIS-RTOS
+				
+			/* Initialise any peripherals or system components */
+			
+			// Initialize the LED
+			Initialise_LED();
+				
+				
+			/* Initialise any threads */
+			
+			// Initialise the main thread to blink the LED’s
+			Init_Blink_LED_Thread();
+				
+				
+			osKernelStart (); // start thread execution
+				
+			while(1){}; // While loop so the program doesn’t terminate
 
-  // initialize peripherals here
-
-  // create 'thread' functions that start executing,
-  // example: tid_name = osThreadCreate (osThread(name), NULL);
-
-  osKernelStart ();                         // start thread execution 
 }
