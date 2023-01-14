@@ -10,6 +10,9 @@
  * main: initialize and start the system
  */
 int main (void) {
+	
+	Init_accel();
+	
   osKernelInitialize ();                    // initialize CMSIS-RTOS
 
   // initialize peripherals here
