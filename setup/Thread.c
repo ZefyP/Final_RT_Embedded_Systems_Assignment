@@ -37,13 +37,8 @@ void Blink_LED_Thread (void const *argument) {
 
 	// for LED types and status definitions
 		uint8_t LED_on = 1; // Defines parameter for LED on
-		uint8_t LED_off = 0; // Defines parameter for LED off
-		
+		uint8_t LED_off = 0; // Defines parameter for LED off		
 		uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
-//		uint8_t orange_LED = 13; // Defines parameter for orange LED (GPIOD pin 13)
-//		uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
-//		uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
-
 
 
   while (1) { // Creates an infinite loop so that the blinking never terminates
@@ -80,7 +75,23 @@ void Button_Thread (void const *argument) {
 
 	uint8_t LED_on = 1; // Defines parameter for LED on
 	uint8_t LED_off = 0; // Defines parameter for LED off
-  uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
+  
+	uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
+	uint8_t orange_LED = 13; // Defines parameter for orange LED (GPIOD pin 13)
+	uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
+	uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
+
+	
+// Intro_blink !
+	Blink_LED(LED_on,blue_LED);
+	Blink_LED(LED_on,red_LED);
+	Blink_LED(LED_on,orange_LED);
+	Blink_LED(LED_on,green_LED);
+	osDelay(1000);
+	Blink_LED(LED_off,blue_LED);
+	Blink_LED(LED_off,red_LED);
+	Blink_LED(LED_off,orange_LED);
+	Blink_LED(LED_off,green_LED);
 	
   while (1) { // Creates an infinite loop so that the blinking never terminates
 		
@@ -120,20 +131,30 @@ int Init_Tilt_Thread (void) {
 
 // Code to define the operation of the main thread. This is effectively the code that was in the infinite FOR loop of our previous blinky program.
 void Tilt_Thread (void const *argument) {
-
+		
+	uint8_t LED_on = 1; // Defines parameter for LED on
+	uint8_t LED_off = 0; // Defines parameter for LED off
   
+	uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
+	uint8_t orange_LED = 13; // Defines parameter for orange LED (GPIOD pin 13)
+	uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
+	uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
+
+
   while (1) { // Creates an infinite loop so that the blinking never terminates
+		//Blink_LED(LED_on,green_LED); // Blinks the green LED on once
 		
-		// Read accel
-		read_accel();
+		//osDelay(1000); // Uses the built in delay function for the OS to create a 1 second delay. The fundamental delay is specified in the “RTX_conf_CM.c” file and usually defaults to 1ms.
 		
-		// Update LEDs states
+		get_orientation();
+		// update_LEDs();
 		
-		// Implement small deadzone and sensitivity
+		osDelay(5); // Uses the built in delay function for the OS to create a 1 second delay. The fundamental delay is specified in the “RTX_conf_CM.c” file and usually defaults to 1ms.	
 		
+		//Blink_LED(LED_off,green_LED); // Blinks the green LED on once
 		
-		osDelay(100); // Uses the built in delay function for the OS to create a 1 second delay. The fundamental delay is specified in the “RTX_conf_CM.c” file and usually defaults to 1ms.	
-		
+		//osDelay(1000); // Uses the built in delay function for the OS to create a 1 second delay. The fundamental delay is specified in the “RTX_conf_CM.c” file and usually defaults to 1ms.	
+	
 		osThreadYield(); // This function tells the RTOS that when the thread gets to this stage the RTOS should suspend this thread and run the next thread that is ready to run. If there is no other thread ready (which is the case with this simple program since we only have one thread) then the calling thread continues. This function effectively forces the RTOS to reschedule and is useful in more complex systems and scheduling policies.
 		
   }

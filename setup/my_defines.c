@@ -1,6 +1,5 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal.h" 								// Define the hal modules
-
 #include "my_defines.h"										// Include headers
 
 
@@ -12,11 +11,6 @@ GPIO_InitTypeDef GPIOE_Params;
 uint8_t data_to_send_receive[1]; //Declares an array to store the required LIS3DSH register address or data in. 
 uint16_t data_size=1; //Declares a variable that specifies that only a single address is accessed in each transaction.
 uint32_t data_timeout=1000; //Sets a maximum time to wait for the SPI transaction to complete in.
-uint8_t Y_Reg_H; //Declares the variable to store the Y-axis acceleration in.
-uint8_t Y_Reg_L; //Declares the variable to store the Y-axis acceleration in.
-uint8_t X_Reg_H; //Declares the variable to store the X-axis acceleration in.
-uint8_t X_Reg_L; //Declares the variable to store the X-axis acceleration in.
-uint8_t Z_Reg_H;
 
 
 // for Accel register and SPI comms
@@ -27,15 +21,21 @@ uint8_t Z_Reg_H;
 #define OUT_X_H_REG	0x29
 #define OUT_X_L_REG	0x28
 
-
+#define Y_THRESHOLD_L -50
+#define Y_THRESHOLD_H  50
+#define X_THRESHOLD_L -50
+#define X_THRESHOLD_H 50
+		
 // for LED types and status definitions
- 	uint8_t LED_on = 1; // Defines parameter for LED on
-	uint8_t LED_off = 0; // Defines parameter for LED off
+uint8_t LED_on = 1; // Defines parameter for LED on
+uint8_t LED_off = 0; // Defines parameter for LED off
 	
-	uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
-	uint8_t orange_LED = 13; // Defines parameter for orange LED (GPIOD pin 13)
-	uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
-	uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
+uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
+uint8_t orange_LED = 13; // Defines parameter for orange LED (GPIOD pin 13)
+uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
+uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
+
+	
 
 
 // Definition for the function to initialise the LED and button
@@ -78,7 +78,6 @@ void Red_LED(uint8_t LED_state){
 
 // INIT SPI
 void Init_SPI(void){
-	
 
 				// Code to initialise the SPI
 		RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; //Enable the clock for SPI1
@@ -120,64 +119,151 @@ void Init_SPI(void){
 
 }
 	
-void Init_accel(void){
+
+
+// Code to read LIS3DSH accelerometer data
+uint16_t read_accel(uint8_t low_reg_axis_address, uint8_t high_reg_axis_address)
+{
+		uint8_t high_val, low_val;
 	
-
-//	
-//		// Code to initialise pins 5-7 of GPIOA
-//		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; //Enable the clock for GPIOA
-//		 
-//		GPIOA_Params.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7; // Selects pins 5,6 and 7
-//		GPIOA_Params.Alternate = GPIO_AF5_SPI1; //Selects alternate function 5 which corresponds to SPI1
-//		GPIOA_Params.Mode = GPIO_MODE_AF_PP; //Selects alternate function push-pull mode
-//		GPIOA_Params.Speed = GPIO_SPEED_FAST; //Selects fast speed
-//		GPIOA_Params.Pull = GPIO_NOPULL; //Selects no pull-up or pull-down activation
-
-//		HAL_GPIO_Init(GPIOA, &GPIOA_Params); // Sets GPIOA into the modes specified in GPIOA_Params
-
-//		// Code to initialise pin 3 of GPIOE
-//		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN; //Enable the clock for GPIOE
-//		GPIOE_Params.Pin = GPIO_PIN_3; // Selects pin 3
-//		GPIOE_Params.Mode = GPIO_MODE_OUTPUT_PP; //Selects normal push-pull mode
-//		GPIOE_Params.Speed = GPIO_SPEED_FAST; //Selects fast speed
-//		GPIOE_Params.Pull = GPIO_PULLUP; //Selects pull-up activation
-//		HAL_GPIO_Init(GPIOE, &GPIOE_Params); // Sets GPIOE into the modes specified in GPIOE_Params
-
-
-//		GPIOE->BSRR = GPIO_PIN_3; //Sets the serial port enable pin CS high (idle)
-//		__HAL_SPI_ENABLE(&SPI_Params); //Enable the SPI
-
-	
+		data_to_send_receive[0] = 0x80 | high_reg_axis_address; // Address for the high register of the axis on LIS3DSH
+    GPIOE->BSRR = GPIO_PIN_3<<16; // Set the SPI communication enable line low to initiate communication
+    HAL_SPI_Transmit(&SPI_Params,data_to_send_receive,data_size,data_timeout); // Send the address of the high register and receive the high value of the axis through the SPI channel
+    GPIOE->BSRR = GPIO_PIN_3; // Set the SPI communication enable line high to signal the end of the communication process
+    
+    data_to_send_receive[0] = 0x80 | low_reg_axis_address; // Address for the low register of the axis on LIS3DSH
+    GPIOE->BSRR = GPIO_PIN_3<<16; // Set the SPI communication enable line low to initiate communication
+    HAL_SPI_Transmit(&SPI_Params,data_to_send_receive,data_size,data_timeout); // Send the address of the low register and receive the low value of the axis through the SPI channel
+    GPIOE->BSRR = GPIO_PIN_3; // Set the SPI communication enable line high to signal the end of the communication process
+ 
+	// Combine the high and low values into a single 16-bit value   
+	return (high_val << 8) | low_val; 
 }
 
 
-void read_accel(void)
-{
-    // Code to read accelerometer data
+
+Orientation get_orientation(void) {
+   // read x and y axis values from the accelerometer
+		int16_t x_val = read_accel(OUT_X_H_REG, OUT_X_L_REG);
+    int16_t y_val = read_accel(OUT_Y_H_REG, OUT_Y_L_REG);
+	  
 	
 	
-	// Read the value from the MSB z-axis data register of the LIS3DSH
-			data_to_send_receive[0] = 0x80|0x2D; // Address for control register 4 on LIS3DSH
-			GPIOE->BSRR = GPIO_PIN_3<<16; // Set the SPI communication enable line low to initiate communication
-			HAL_SPI_Transmit(&SPI_Params,data_to_send_receive,data_size,data_timeout); // Send the address of the register to be read on the LIS3DSH	
-			data_to_send_receive[0] = 0x00; // Set a blank address because we are waiting to receive data
-			HAL_SPI_Receive(&SPI_Params,data_to_send_receive,data_size,data_timeout); // Get the data from the LIS3DSH through the SPI channel
-			GPIOE->BSRR = GPIO_PIN_3; // Set the SPI communication enable line high to signal the end of the communication process
-			Z_Reg_H = data_to_send_receive[0]; // Read the data from the SPI data array into our internal variable.
+	// RESET all LEDs
+			Blink_LED(LED_off,green_LED);
+			Blink_LED(LED_off,orange_LED);
+			Blink_LED(LED_off,red_LED);
+			Blink_LED(LED_off,blue_LED);
+	
+	//Checking Y-axis acceleration
+			if (x_val < Y_THRESHOLD_L){
+				Blink_LED(LED_on, blue_LED); //M Turn on blue LED if the value is negative
 				
-			if((Z_Reg_H&0x80) == 0x80){ // Check to see if the received value is positive or negative - the acceleration is a signed 8-bit number so the MSB is the sign bit - 1 is negative, 0 is positive. Refer to the C Programming guide document if you are unclear about this.
-				GPIOD->BSRR |= (1<<blue_LED); // If the receive value is negative turn on the blue LED
-				GPIOD->BSRR |= (1<<(orange_LED+16)); // If the receive value is negative turn of the orange LED
 			}
-			else{
-				GPIOD->BSRR |= (1<<orange_LED); // If the received value is positive turn on the orange LED
-				GPIOD->BSRR |= (1<<(blue_LED+16)); // If the received value is positive turn of the blue LED
+			else if (y_val > Y_THRESHOLD_H){
+				Blink_LED(LED_on, orange_LED); //M Turn on blue LED if the value is negative
+			
+			}
+			else {							//all LEDs off if the board is placed horizontally
+				Blink_LED(LED_off, red_LED); //M Turn on blue LED if the value is negative
+			
 			}
 	
-	}
-	
-
-void write_accel(void)
-{
-    // Code to update LED states
+//    // check the values of x and y and return the corresponding orientation
+//    if (x_val > 0 && y_val > 0) {
+//			 // x is positive and y is positive, board is tilted upwards and to the right
+//        return UP_RIGHT;
+//    } else if (x_val > 0 && y_val < 0) {
+//			// x is positive and y is negative, board is tilted to the right
+//        return RIGHT;
+//    } else if (x_val < 0 && y_val > 0) {
+//			// x is negative and y is positive, board is tilted upwards
+//        return UP;
+//    } else if (x_val < 0 && y_val < 0) {
+//			// x is negative and y is positive, board is tilted upwards
+//        return UP_LEFT;
+//    } else if (x_val == 0 && y_val > 0) {
+//			// x is zero and y is positive, board is tilted upwards
+//        return UP;
+//    } else if (x_val == 0 && y_val < 0) {
+//			// x is zero and y is negative, board is tilted downwards
+//        return DOWN;
+//    } else if (x_val > 0 && y_val == 0) {
+//			// x is positive and y is zero, board is tilted to the right
+//        return RIGHT;
+//    } else if (x_val < 0 && y_val == 0) {
+//			 // x is negative and y is zero, board is tilted to the left
+//        return LEFT;
+//    } else {
+//			//if none of the above conditions are met, return unknown
+//        return UNKNOWN;
+//    }
+return UNKNOWN;
 }
+
+
+
+
+//void update_LEDs(void)
+//{
+//    // Code to update LED states
+//	
+//		// Read axis accel
+//		Orientation current_orientation = get_orientation();
+//			
+		
+//	
+	
+	 
+//		// Update LEDs states
+//		switch (current_orientation) {
+//			
+//    case UP:
+//        // Turn on blue
+//		Blink_LED(LED_on,green_LED);
+//        break;
+//    case DOWN:
+//        // Turn on LED2
+//		Blink_LED(LED_on,blue_LED);			
+//        break;
+//    case LEFT:
+//        // Turn on LED3
+//		Blink_LED(LED_on,orange_LED);		
+//        break;
+//    case RIGHT:
+//        // Turn on LED4
+//		Red_LED(1);
+//        break;
+//    case UP_LEFT:
+//        // Turn on LED1 and LED3
+//		Blink_LED(LED_on,green_LED);
+//		Blink_LED(LED_on,orange_LED);
+//        break;
+//    case UP_RIGHT:
+//        // Turn on LED1 and LED4
+//		Blink_LED(LED_on,green_LED);
+//		Blink_LED(LED_on,red_LED);
+//        break;
+//    case DOWN_LEFT:
+//        // Turn on LED2 and LED3
+//		Blink_LED(LED_on,orange_LED);
+//		Blink_LED(LED_on,blue_LED);
+//        break;
+//    case DOWN_RIGHT:
+//        // Turn on LED2 and LED4
+//		Blink_LED(LED_on,red_LED);
+//		Blink_LED(LED_on,blue_LED);
+//        break;
+//    default:
+//			Blink_LED(LED_on, blue_LED);
+//        // No LEDs should be illuminated in the case of horizontal orientation or an unknown orientation
+//        break;
+//		}
+//		
+
+		// Implement small deadzone and sensitivity
+		
+//}
+
+
+
