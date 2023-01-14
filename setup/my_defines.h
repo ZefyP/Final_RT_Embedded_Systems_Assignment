@@ -26,7 +26,7 @@ typedef enum {
 		
 Orientation get_orientation(void);
 uint16_t read_accel(uint8_t low_reg_axis_address, uint8_t high_reg_axis_address);
-void update_LEDs(void);
+//void update_LEDs(void);
 
 
 # endif //MY_DEFINES_H

@@ -147,8 +147,6 @@ Orientation get_orientation(void) {
 		int16_t x_val = read_accel(OUT_X_H_REG, OUT_X_L_REG);
     int16_t y_val = read_accel(OUT_Y_H_REG, OUT_Y_L_REG);
 	  
-	
-	
 	// RESET all LEDs
 			Blink_LED(LED_off,green_LED);
 			Blink_LED(LED_off,orange_LED);
@@ -156,7 +154,7 @@ Orientation get_orientation(void) {
 			Blink_LED(LED_off,blue_LED);
 	
 	//Checking Y-axis acceleration
-			if (x_val < Y_THRESHOLD_L){
+			if (y_val < Y_THRESHOLD_L){
 				Blink_LED(LED_on, blue_LED); //M Turn on blue LED if the value is negative
 				
 			}
@@ -169,35 +167,6 @@ Orientation get_orientation(void) {
 			
 			}
 	
-//    // check the values of x and y and return the corresponding orientation
-//    if (x_val > 0 && y_val > 0) {
-//			 // x is positive and y is positive, board is tilted upwards and to the right
-//        return UP_RIGHT;
-//    } else if (x_val > 0 && y_val < 0) {
-//			// x is positive and y is negative, board is tilted to the right
-//        return RIGHT;
-//    } else if (x_val < 0 && y_val > 0) {
-//			// x is negative and y is positive, board is tilted upwards
-//        return UP;
-//    } else if (x_val < 0 && y_val < 0) {
-//			// x is negative and y is positive, board is tilted upwards
-//        return UP_LEFT;
-//    } else if (x_val == 0 && y_val > 0) {
-//			// x is zero and y is positive, board is tilted upwards
-//        return UP;
-//    } else if (x_val == 0 && y_val < 0) {
-//			// x is zero and y is negative, board is tilted downwards
-//        return DOWN;
-//    } else if (x_val > 0 && y_val == 0) {
-//			// x is positive and y is zero, board is tilted to the right
-//        return RIGHT;
-//    } else if (x_val < 0 && y_val == 0) {
-//			 // x is negative and y is zero, board is tilted to the left
-//        return LEFT;
-//    } else {
-//			//if none of the above conditions are met, return unknown
-//        return UNKNOWN;
-//    }
 return UNKNOWN;
 }
 
