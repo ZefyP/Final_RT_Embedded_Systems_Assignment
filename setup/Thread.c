@@ -32,7 +32,6 @@ void Blink_LED_Thread (void const *argument) {
 	uint8_t LED_on = 1; // Defines parameter for LED on
 	uint8_t LED_off = 0; // Defines parameter for LED off
 	uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
-	uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
 
   while (1) { // Creates an infinite loop so that the blinking never terminates
 		
@@ -75,7 +74,7 @@ void Button_Thread (void const *argument) {
 		// Checks the state of the push-button and only turns the red LED on if the button has only just been pressed, which is indicated by the state of the red LED. 
 		if(((GPIOA->IDR & 0x00000001) == 0x00000001) & ((GPIOD->ODR & (1<<red_LED)) != (1<<red_LED))){
 					
-			Blink_LED(LED_off,red_LED); // Blinks the red LED on once
+			Blink_LED(LED_on,red_LED); // Blinks the red LED on once
 		
 		}
 		// Checks the state of the push-button and only turns the red LED off if the button has only just been released, which is indicated by the state of the red LED. 		
