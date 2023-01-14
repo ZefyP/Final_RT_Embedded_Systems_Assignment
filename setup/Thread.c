@@ -1,6 +1,6 @@
 #include "cmsis_os.h"                            // CMSIS RTOS header file
 #include "stm32f4xx.h"
-#include "my_headers.h"
+#include "my_defines.h"
 
 // Thread Declarations
 
