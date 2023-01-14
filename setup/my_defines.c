@@ -8,24 +8,6 @@ SPI_HandleTypeDef SPI_Params;
 GPIO_InitTypeDef GPIOA_Params;
 GPIO_InitTypeDef GPIOE_Params;
 
-uint8_t data_to_send_receive[1]; //Declares an array to store the required LIS3DSH register address or data in. 
-uint16_t data_size=1; //Declares a variable that specifies that only a single address is accessed in each transaction.
-uint32_t data_timeout=1000; //Sets a maximum time to wait for the SPI transaction to complete in.
-
-
-// for Accel register and SPI comms
-#define CTRL4_REG	0x20
-#define ENABLE_AXES	0x17
-#define OUT_Y_H_REG	0x2B
-#define OUT_Y_L_REG	0x2A
-#define OUT_X_H_REG	0x29
-#define OUT_X_L_REG	0x28
-
-#define Y_THRESHOLD_L -50
-#define Y_THRESHOLD_H  50
-#define X_THRESHOLD_L -50
-#define X_THRESHOLD_H 50
-		
 // for LED types and status definitions
 uint8_t LED_on = 1; // Defines parameter for LED on
 uint8_t LED_off = 0; // Defines parameter for LED off
@@ -40,7 +22,7 @@ uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
 
 // Definition for the function to initialise the LED and button
 
-void Initialise_LED_and_button(void){
+void Initialise_LED(void){
 	
 	// Initialise GPIO Port for LEDs
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN; // Enable Port D clock 
@@ -49,9 +31,7 @@ void Initialise_LED_and_button(void){
 	GPIOD->MODER |= GPIO_MODER_MODER14_0; // Port D.14 output - red LED
 	GPIOD->MODER |= GPIO_MODER_MODER15_0; // Port D.15 output - blue LED
 	
-	//Initialise GPIO for push-button
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // Enable Port A clock
-}
+	}
 
 // Definition for the function to blink the LED
 void Blink_LED(uint8_t LED_state,uint8_t LED_colour){
@@ -79,7 +59,7 @@ void Red_LED(uint8_t LED_state){
 // INIT SPI
 void Init_SPI(void){
 
-				// Code to initialise the SPI
+	// Code to initialise the SPI
 		RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; //Enable the clock for SPI1
 		
 		SPI_Params.Instance = SPI1; // Selects which SPI interface to use
@@ -119,56 +99,88 @@ void Init_SPI(void){
 
 }
 	
+void Initialise_button(void){
+	
+	//Initialise GPIO for push-button
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // Enable Port A clock
+	GPIOA->MODER &= ~GPIO_MODER_MODER0;  // Set GPIOA pin 0 as an input 
+
+}
 
 
+
+//Defining a function to write LIS3DSH data
+void LIS3DSH_enable(uint8_t register_address, uint8_t enable_address){
+	uint8_t data_to_send_receive[1];  //M Declare an array to store the required LIS3DSH register address or data in. It has only one element as only one address will be accessed in each SPI transaction
+	uint16_t data_size = 1; //M A variable to specify that only one address is accessed in each transaction
+	uint32_t data_timeout = 1000; //M Set maximum time for SPI transaction to be completed whcih ensures that the program will not freeze in case of problems with SPI channel
+	
+	data_to_send_receive[0] = register_address; //M LIS3DSH CR4 address
+	GPIOE->BSRR = GPIO_PIN_3<<16; //M Initiate SPI communication (enable line low) 
+	HAL_SPI_Transmit(&SPI_Params,data_to_send_receive,data_size,data_timeout); //M Send CR4 register address to LIS3DSH
+	data_to_send_receive[0] = enable_address; //M 0xE8 Enables x, y and z-axes, sets a sample rate of 3.125Hz and continuous update (11101000 binary)
+	HAL_SPI_Transmit(&SPI_Params,data_to_send_receive,data_size,data_timeout); //M Send new register value
+	GPIOE->BSRR = GPIO_PIN_3; //M End SPI communication (enable line high)
+	
+}
 // Code to read LIS3DSH accelerometer data
-uint16_t read_accel(uint8_t low_reg_axis_address, uint8_t high_reg_axis_address)
+uint16_t read_accel(uint8_t reg_axis_address)
 {
-		uint8_t high_val, low_val;
+	//definitions
+	uint16_t val;
+	uint8_t data_to_send_receive[1];  //M Declare an array to store the required LIS3DSH register address or data in. It has only one element as only one address will be accessed in each SPI transaction
+	uint16_t data_size = 1; //M A variable to specify that only one address is accessed in each transaction
+	uint32_t data_timeout = 1000; //M Set maximum time for SPI transaction to be completed whcih ensures that the program will not freeze in case of problems with SPI channel
 	
-		data_to_send_receive[0] = 0x80 | high_reg_axis_address; // Address for the high register of the axis on LIS3DSH
-    GPIOE->BSRR = GPIO_PIN_3<<16; // Set the SPI communication enable line low to initiate communication
-    HAL_SPI_Transmit(&SPI_Params,data_to_send_receive,data_size,data_timeout); // Send the address of the high register and receive the high value of the axis through the SPI channel
-    GPIOE->BSRR = GPIO_PIN_3; // Set the SPI communication enable line high to signal the end of the communication process
-    
-    data_to_send_receive[0] = 0x80 | low_reg_axis_address; // Address for the low register of the axis on LIS3DSH
-    GPIOE->BSRR = GPIO_PIN_3<<16; // Set the SPI communication enable line low to initiate communication
-    HAL_SPI_Transmit(&SPI_Params,data_to_send_receive,data_size,data_timeout); // Send the address of the low register and receive the low value of the axis through the SPI channel
-    GPIOE->BSRR = GPIO_PIN_3; // Set the SPI communication enable line high to signal the end of the communication process
- 
-	// Combine the high and low values into a single 16-bit value   
-	return (high_val << 8) | low_val; 
+	// read from register
+	data_to_send_receive[0] = 0x80| reg_axis_address; //M y-axis MSB data register address 
+	GPIOE->BSRR = GPIO_PIN_3<<16; // Set the SPI communication enable line low to initiate communication
+	HAL_SPI_Transmit(&SPI_Params,data_to_send_receive,data_size,data_timeout); // Send the address of the register to be read on the LIS3DSH	
+	data_to_send_receive[0] = 0x00; // Set a blank address because we are waiting to receive data
+	HAL_SPI_Receive(&SPI_Params,data_to_send_receive,data_size,data_timeout); // Get the data from the LIS3DSH through the SPI channel
+	GPIOE->BSRR = GPIO_PIN_3; // Set the SPI communication enable line high to signal the end of the communication process
+	
+	val = data_to_send_receive[0]; // Read the data from the SPI data array into our internal variable.
+
+	return val; 
 }
 
-
-
-Orientation get_orientation(void) {
-   // read x and y axis values from the accelerometer
-		int16_t x_val = read_accel(OUT_X_H_REG, OUT_X_L_REG);
-    int16_t y_val = read_accel(OUT_Y_H_REG, OUT_Y_L_REG);
-	  
-	// RESET all LEDs
-			Blink_LED(LED_off,green_LED);
-			Blink_LED(LED_off,orange_LED);
-			Blink_LED(LED_off,red_LED);
-			Blink_LED(LED_off,blue_LED);
-	
-	//Checking Y-axis acceleration
-			if (y_val < Y_THRESHOLD_L){
-				Blink_LED(LED_on, blue_LED); //M Turn on blue LED if the value is negative
-				
-			}
-			else if (y_val > Y_THRESHOLD_H){
-				Blink_LED(LED_on, orange_LED); //M Turn on blue LED if the value is negative
-			
-			}
-			else {							//all LEDs off if the board is placed horizontally
-				Blink_LED(LED_off, red_LED); //M Turn on blue LED if the value is negative
-			
-			}
-	
-return UNKNOWN;
+bool is_button_pressed(void){
+	bool state = false; //M Declaring a variable which stores button state (1- pressed, 0 - released)
+	if(((GPIOA->IDR & 0x00000001) == 0x00000001) & ((GPIOD->ODR & (1<<14)) != (1<<14)))
+		{ //checking if the button is pressed 
+				state = true;
+		}
+		return state;
 }
+
+//Orientation get_orientation(void) {
+//   // read x and y axis values from the accelerometer
+//		int16_t x_val = read_accel(OUT_X_H_REG, OUT_X_L_REG);
+//    int16_t y_val = read_accel(OUT_Y_H_REG, OUT_Y_L_REG);
+//	  
+//	// RESET all LEDs
+//			Blink_LED(LED_off,green_LED);
+//			Blink_LED(LED_off,orange_LED);
+//			Blink_LED(LED_off,red_LED);
+//			Blink_LED(LED_off,blue_LED);
+//	
+//	//Checking Y-axis acceleration
+//			if (y_val < Y_THRESHOLD_L){
+//				Blink_LED(LED_on, blue_LED); //M Turn on blue LED if the value is negative
+//				
+//			}
+//			else if (y_val >= Y_THRESHOLD_H){
+//				Blink_LED(LED_on, orange_LED); //M Turn on blue LED if the value is negative
+//			
+//			}
+//			else {							//all LEDs off if the board is placed horizontally
+//				Blink_LED(LED_on, red_LED); //M Turn on blue LED if the value is negative
+//			
+//			}
+//	
+//return UNKNOWN;
+//}
 
 
 

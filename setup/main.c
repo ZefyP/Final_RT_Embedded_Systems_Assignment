@@ -20,18 +20,18 @@ int main (void) {
 	osKernelInitialize ();	
 	
 	
-	/* Initialise any peripherals or system components */
+	/* Initialise any peripherals */
 	
 // Initialise the LED and button	
-	Initialise_LED_and_button();
-
+	Initialise_LED();
+	Initialise_button();
 	
 	
-	/* Initialise any threads */
+	/* Initialise the threads */
 
 // Initialise the main thread to blink the LED’s
-	// Init_Blink_LED_Thread();
-  //	Init_Button_Thread();
+	//Init_Blink_LED_Thread();
+  Init_Button_Thread();
 	Init_Tilt_Thread();
 	
 
