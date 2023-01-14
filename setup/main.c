@@ -26,8 +26,6 @@ int main (void) {
 // Initialise the LED and button	
 	Initialise_LED_and_button();
 
-// Initialise accellerometer
-	Init_accel();
 	/* Initialise any threads */
 
 // Initialise the main thread to blink the LED’s

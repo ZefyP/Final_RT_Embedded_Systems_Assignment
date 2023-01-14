@@ -119,36 +119,6 @@ void Init_SPI(void){
 		__HAL_SPI_ENABLE(&SPI_Params); //Enable the SPI
 
 }
-	
-void Init_accel(void){
-	
-
-//	
-//		// Code to initialise pins 5-7 of GPIOA
-//		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; //Enable the clock for GPIOA
-//		 
-//		GPIOA_Params.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7; // Selects pins 5,6 and 7
-//		GPIOA_Params.Alternate = GPIO_AF5_SPI1; //Selects alternate function 5 which corresponds to SPI1
-//		GPIOA_Params.Mode = GPIO_MODE_AF_PP; //Selects alternate function push-pull mode
-//		GPIOA_Params.Speed = GPIO_SPEED_FAST; //Selects fast speed
-//		GPIOA_Params.Pull = GPIO_NOPULL; //Selects no pull-up or pull-down activation
-
-//		HAL_GPIO_Init(GPIOA, &GPIOA_Params); // Sets GPIOA into the modes specified in GPIOA_Params
-
-//		// Code to initialise pin 3 of GPIOE
-//		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN; //Enable the clock for GPIOE
-//		GPIOE_Params.Pin = GPIO_PIN_3; // Selects pin 3
-//		GPIOE_Params.Mode = GPIO_MODE_OUTPUT_PP; //Selects normal push-pull mode
-//		GPIOE_Params.Speed = GPIO_SPEED_FAST; //Selects fast speed
-//		GPIOE_Params.Pull = GPIO_PULLUP; //Selects pull-up activation
-//		HAL_GPIO_Init(GPIOE, &GPIOE_Params); // Sets GPIOE into the modes specified in GPIOE_Params
-
-
-//		GPIOE->BSRR = GPIO_PIN_3; //Sets the serial port enable pin CS high (idle)
-//		__HAL_SPI_ENABLE(&SPI_Params); //Enable the SPI
-
-	
-}
 
 
 void read_accel(void)
@@ -166,12 +136,12 @@ void read_accel(void)
 			Z_Reg_H = data_to_send_receive[0]; // Read the data from the SPI data array into our internal variable.
 				
 			if((Z_Reg_H&0x80) == 0x80){ // Check to see if the received value is positive or negative - the acceleration is a signed 8-bit number so the MSB is the sign bit - 1 is negative, 0 is positive. Refer to the C Programming guide document if you are unclear about this.
-				GPIOD->BSRR |= (1<<blue_LED); // If the receive value is negative turn on the blue LED
-				GPIOD->BSRR |= (1<<(orange_LED+16)); // If the receive value is negative turn of the orange LED
+				GPIOD->BSRR |= (1<<orange_LED); // If the receive value is negative turn on the blue LED
+				//GPIOD->BSRR |= (1<<(orange_LED+16)); // If the receive value is negative turn off the orange LED
 			}
 			else{
 				GPIOD->BSRR |= (1<<orange_LED); // If the received value is positive turn on the orange LED
-				GPIOD->BSRR |= (1<<(blue_LED+16)); // If the received value is positive turn of the blue LED
+				GPIOD->BSRR |= (1<<(blue_LED+16)); // If the received value is positive turn off the blue LED
 			}
 	
 	}
