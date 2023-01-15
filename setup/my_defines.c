@@ -3,6 +3,9 @@
 #include "my_defines.h"										// Include headers
 
 
+// #include "audio.h"
+
+
 // Declarations
 SPI_HandleTypeDef SPI_Params;
 GPIO_InitTypeDef GPIOA_Params;
@@ -16,8 +19,6 @@ uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
 uint8_t orange_LED = 13; // Defines parameter for orange LED (GPIOD pin 13)
 uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
 uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
-
-	
 
 
 // Definition for the function to initialise the LED and button
