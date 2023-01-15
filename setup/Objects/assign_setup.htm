@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\assign_setup.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\assign_setup.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060300: Last Updated: Sun Jan 15 18:54:10 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060300: Last Updated: Sun Jan 15 20:17:49 2023
 <BR><P>
 <H3>Maximum Stack Usage =        224 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -139,21 +139,22 @@ Function Pointers
  <LI><a href="#[65]">svcKernelInitialize</a> from rt_cmsis.o(i.svcKernelInitialize) referenced from rt_cmsis.o(i.osKernelInitialize)
  <LI><a href="#[66]">svcKernelStart</a> from rt_cmsis.o(i.svcKernelStart) referenced from rt_cmsis.o(i.osKernelStart)
  <LI><a href="#[67]">svcMessageGet</a> from rt_cmsis.o(i.svcMessageGet) referenced from rt_cmsis.o(i.osMessageGet)
- <LI><a href="#[68]">svcSignalSet</a> from rt_cmsis.o(i.svcSignalSet) referenced from rt_cmsis.o(i.osSignalSet)
- <LI><a href="#[69]">svcSignalWait</a> from rt_cmsis.o(i.svcSignalWait) referenced from rt_cmsis.o(i.osSignalWait)
- <LI><a href="#[6a]">svcThreadCreate</a> from rt_cmsis.o(i.svcThreadCreate) referenced from rt_cmsis.o(i.osThreadCreate)
- <LI><a href="#[6b]">svcThreadGetId</a> from rt_cmsis.o(i.svcThreadGetId) referenced from rt_cmsis.o(i.osThreadExit)
- <LI><a href="#[6c]">svcThreadTerminate</a> from rt_cmsis.o(i.svcThreadTerminate) referenced from rt_cmsis.o(i.osThreadExit)
- <LI><a href="#[6d]">svcThreadYield</a> from rt_cmsis.o(i.svcThreadYield) referenced from rt_cmsis.o(i.osThreadYield)
- <LI><a href="#[6e]">svcTimerCall</a> from rt_cmsis.o(i.svcTimerCall) referenced from rt_cmsis.o(i.osTimerCall)
+ <LI><a href="#[68]">svcSignalClear</a> from rt_cmsis.o(i.svcSignalClear) referenced from rt_cmsis.o(i.osSignalClear)
+ <LI><a href="#[69]">svcSignalSet</a> from rt_cmsis.o(i.svcSignalSet) referenced from rt_cmsis.o(i.osSignalSet)
+ <LI><a href="#[6a]">svcSignalWait</a> from rt_cmsis.o(i.svcSignalWait) referenced from rt_cmsis.o(i.osSignalWait)
+ <LI><a href="#[6b]">svcThreadCreate</a> from rt_cmsis.o(i.svcThreadCreate) referenced from rt_cmsis.o(i.osThreadCreate)
+ <LI><a href="#[6c]">svcThreadGetId</a> from rt_cmsis.o(i.svcThreadGetId) referenced from rt_cmsis.o(i.osThreadExit)
+ <LI><a href="#[6d]">svcThreadTerminate</a> from rt_cmsis.o(i.svcThreadTerminate) referenced from rt_cmsis.o(i.osThreadExit)
+ <LI><a href="#[6e]">svcThreadYield</a> from rt_cmsis.o(i.svcThreadYield) referenced from rt_cmsis.o(i.osThreadYield)
+ <LI><a href="#[6f]">svcTimerCall</a> from rt_cmsis.o(i.svcTimerCall) referenced from rt_cmsis.o(i.osTimerCall)
 </UL>
 <P>
 <H3>
 Global Symbols
 </H3>
 <P><STRONG><a name="[78]"></a>__main</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, __main.o(!!!main))
-<BR><BR>[Calls]<UL><LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
-<LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
+<BR><BR>[Calls]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
+<LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
 </UL>
 
 <P><STRONG><a name="[7c]"></a>__scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter))
@@ -243,8 +244,8 @@ Global Symbols
 <P><STRONG><a name="[10d]"></a>__rt_lib_shutdown_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000C))
 
 <P><STRONG><a name="[7d]"></a>__rt_entry</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry.o(.ARM.Collect$$rtentry$$00000000))
-<BR><BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
-<LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload_rt2
+<BR><BR>[Called By]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload_rt2
+<LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
 </UL>
 
 <P><STRONG><a name="[10e]"></a>__rt_entry_presh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000002))
@@ -703,7 +704,7 @@ Global Symbols
 <LI><a href="#[9d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;is_button_pressed
 <LI><a href="#[9a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Blink_LED
 </UL>
-<BR>[Called By]<UL><LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<BR>[Address Reference Count : 1]<UL><LI> thread.o(.constdata)
 </UL>
 <P><STRONG><a name="[ab]"></a>HAL_GPIO_Init</STRONG> (Thumb, 452 bytes, Stack size 24 bytes, stm32f4xx_hal_gpio.o(i.HAL_GPIO_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = HAL_GPIO_Init
@@ -978,7 +979,7 @@ Global Symbols
 <P><STRONG><a name="[8f]"></a>osThreadCreate</STRONG> (Thumb, 38 bytes, Stack size 0 bytes, rt_cmsis.o(i.osThreadCreate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = osThreadCreate &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
-<BR>[Calls]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
+<BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 <BR>[Called By]<UL><LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_platform_post_lib_init
 <LI><a href="#[ac]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_Tilt_Thread
@@ -986,7 +987,7 @@ Global Symbols
 <LI><a href="#[a8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Init_Blink_Pattern_Thread
 </UL>
 
-<P><STRONG><a name="[70]"></a>osThreadExit</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, rt_cmsis.o(i.osThreadExit))
+<P><STRONG><a name="[71]"></a>osThreadExit</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, rt_cmsis.o(i.osThreadExit))
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.svcThreadCreate)
 </UL>
 <P><STRONG><a name="[9c]"></a>osThreadYield</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.osThreadYield))
@@ -1014,7 +1015,7 @@ Global Symbols
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sysTimerTick
 </UL>
 
-<P><STRONG><a name="[6f]"></a>os_idle_demon</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, rtx_conf_cm.o(i.os_idle_demon))
+<P><STRONG><a name="[70]"></a>os_idle_demon</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, rtx_conf_cm.o(i.os_idle_demon))
 <BR>[Address Reference Count : 1]<UL><LI> rt_task.o(i.rt_sys_init)
 </UL>
 <P><STRONG><a name="[dd]"></a>os_tick_init</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, rt_system.o(i.os_tick_init))
@@ -1047,7 +1048,7 @@ Global Symbols
 <P><STRONG><a name="[eb]"></a>rt_alloc_mem</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, rt_memory.o(i.rt_alloc_mem))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = rt_alloc_mem
 </UL>
-<BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
+<BR>[Called By]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
 <P><STRONG><a name="[be]"></a>rt_block</STRONG> (Thumb, 48 bytes, Stack size 16 bytes, rt_task.o(i.rt_block))
@@ -1125,7 +1126,7 @@ Global Symbols
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_rmv_dly
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
 </UL>
-<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSignalSet
+<BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSignalSet
 </UL>
 
 <P><STRONG><a name="[cc]"></a>rt_evt_wait</STRONG> (Thumb, 56 bytes, Stack size 16 bytes, rt_event.o(i.rt_evt_wait))
@@ -1133,7 +1134,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_block
 </UL>
-<BR>[Called By]<UL><LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSignalWait
+<BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSignalWait
 </UL>
 
 <P><STRONG><a name="[5f]"></a>rt_free_box</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, rt_membox.o(i.rt_free_box))
@@ -1411,7 +1412,7 @@ Global Symbols
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_alloc_box
 </UL>
-<BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
+<BR>[Called By]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
 </UL>
 
 <P><STRONG><a name="[e1]"></a>rt_tsk_delete</STRONG> (Thumb, 352 bytes, Stack size 40 bytes, rt_task.o(i.rt_tsk_delete))
@@ -1428,7 +1429,7 @@ Global Symbols
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_free_box
 <LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_dispatch
 </UL>
-<BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadTerminate
+<BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadTerminate
 </UL>
 
 <P><STRONG><a name="[e3]"></a>rt_tsk_pass</STRONG> (Thumb, 38 bytes, Stack size 16 bytes, rt_task.o(i.rt_tsk_pass))
@@ -1438,7 +1439,7 @@ Global Symbols
 <LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_switch_req
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_put_prio
 </UL>
-<BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadYield
+<BR>[Called By]<UL><LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadYield
 </UL>
 
 <P><STRONG><a name="[e5]"></a>rt_tsk_prio</STRONG> (Thumb, 108 bytes, Stack size 16 bytes, rt_task.o(i.rt_tsk_prio))
@@ -1467,10 +1468,10 @@ Global Symbols
 <P><STRONG><a name="[65]"></a>svcKernelInitialize</STRONG> (Thumb, 80 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcKernelInitialize))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = svcKernelInitialize &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
-<BR>[Calls]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageCreate
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sys_init
+<BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_sys_init
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_init_mem
 <LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadCreate
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageCreate
 </UL>
 <BR>[Called By]<UL><LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osKernelInitialize
 </UL>
@@ -1516,7 +1517,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osSignalSet)
 </UL>
-<P><STRONG><a name="[69]"></a>svcSignalWait</STRONG> (Thumb, 80 bytes, Stack size 16 bytes, rt_cmsis.o(i.svcSignalWait))
+<P><STRONG><a name="[6a]"></a>svcSignalWait</STRONG> (Thumb, 80 bytes, Stack size 16 bytes, rt_cmsis.o(i.svcSignalWait))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = svcSignalWait &rArr; rt_evt_wait &rArr; rt_block &rArr; rt_put_dly
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_ms2tick
@@ -1524,7 +1525,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osSignalWait)
 </UL>
-<P><STRONG><a name="[6a]"></a>svcThreadCreate</STRONG> (Thumb, 100 bytes, Stack size 16 bytes, rt_cmsis.o(i.svcThreadCreate))
+<P><STRONG><a name="[6b]"></a>svcThreadCreate</STRONG> (Thumb, 100 bytes, Stack size 16 bytes, rt_cmsis.o(i.svcThreadCreate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_create
@@ -1536,14 +1537,14 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osThreadCreate)
 </UL>
-<P><STRONG><a name="[6b]"></a>svcThreadGetId</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcThreadGetId))
+<P><STRONG><a name="[6c]"></a>svcThreadGetId</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcThreadGetId))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = svcThreadGetId
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ed]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_self
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osThreadExit)
 </UL>
-<P><STRONG><a name="[6c]"></a>svcThreadTerminate</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcThreadTerminate))
+<P><STRONG><a name="[6d]"></a>svcThreadTerminate</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcThreadTerminate))
 <BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = svcThreadTerminate &rArr; rt_tsk_delete &rArr; rt_dispatch &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tid2ptcb
@@ -1552,14 +1553,14 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osThreadExit)
 </UL>
-<P><STRONG><a name="[6d]"></a>svcThreadYield</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcThreadYield))
+<P><STRONG><a name="[6e]"></a>svcThreadYield</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcThreadYield))
 <BR><BR>[Stack]<UL><LI>Max Depth = 36<LI>Call Chain = svcThreadYield &rArr; rt_tsk_pass &rArr; rt_put_prio
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_tsk_pass
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> rt_cmsis.o(i.osThreadYield)
 </UL>
-<P><STRONG><a name="[6e]"></a>svcTimerCall</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcTimerCall))
+<P><STRONG><a name="[6f]"></a>svcTimerCall</STRONG> (Thumb, 24 bytes, Stack size 8 bytes, rt_cmsis.o(i.svcTimerCall))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = svcTimerCall
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ee]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_id2obj
@@ -1570,8 +1571,8 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = sysTimerTick &rArr; isrMessagePut &rArr; isr_mbx_send &rArr; rt_psq_enq
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;os_error
-<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrMessagePut
 <LI><a href="#[ef]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_timer_insert
+<LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrMessagePut
 </UL>
 <BR>[Called By]<UL><LI><a href="#[93]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_systick
 </UL>
@@ -1620,16 +1621,16 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[e6]"></a>rt_ms2tick</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_ms2tick))
-<BR><BR>[Called By]<UL><LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
+<BR><BR>[Called By]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSignalWait
+<LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcMessageGet
 <LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcDelay
-<LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSignalWait
 </UL>
 
 <P><STRONG><a name="[b5]"></a>rt_tid2ptcb</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, rt_cmsis.o(i.rt_tid2ptcb))
-<BR><BR>[Called By]<UL><LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSignalSet
-<LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadTerminate
+<BR><BR>[Called By]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcThreadTerminate
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSignalSet
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;svcSignalClear
+<LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;isrSignalSet
 </UL>
 
 <P><STRONG><a name="[ef]"></a>rt_timer_insert</STRONG> (Thumb, 48 bytes, Stack size 12 bytes, rt_cmsis.o(i.rt_timer_insert))

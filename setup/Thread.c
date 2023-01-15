@@ -8,12 +8,9 @@ bool flag_state = false;
 
 // Thread Declarations
 
-//void Button_Thread (void const *argument); 
-//osThreadId tid_Button_Thread; 
-//osThreadDef (Button_Thread, osPriorityNormal, 1, 0); 
-
-
-// osEvent signal_event;
+void Button_Thread (void const *argument); 
+osThreadId tid_Button_Thread; 
+osThreadDef (Button_Thread, osPriorityNormal, 1, 0); 
 
 void Tilt_Thread (void const *argument);
 osThreadId tid_Tilt_Thread; 
@@ -42,7 +39,7 @@ osThreadDef (Blink_Pattern_Thread, osPriorityNormal, 1, 0);
  *     Tilt Switch Thread
  *-----------------------------------------------------------------------*/
  
-// Code to define the thread function to initialise the main thread - this initialise function is called from the “main.c” file to start the thread.
+// Code to define the thread function to initialise the main thread - this initialise function is called from the ?main.c? file to start the thread.
 int Init_Tilt_Thread (void) {
 
   tid_Tilt_Thread = osThreadCreate (osThread(Tilt_Thread), NULL); // Creates the main thread object that we have declared and assigns it the thread ID that we have declared.
@@ -188,15 +185,10 @@ void Blink_Pattern_Thread (void const *argument) {
 		uint8_t red_LED = 14; //Parameter for red LED (GPIOD 14)
 		uint8_t blue_LED = 15; //Parameter for blue LED (GPIOD 15)
 			
-	//osSignalClear(tid_Blink_Pattern_Thread,0x01);// Clear the flag 0x01 of the Blink_Pattern_Thread before entering the while loop
-	osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the thread so that it resumes next time wait is called	
-  // osSignalClear(tid_Blink_Pattern_Thread,0x01);// Clear the flag 0x01 of the Tilt_Thread before entering the while loop
+		osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+
 	
   while (1) { //infinite loop for the function to never terminate
-		//	osSignalWait(0x01, osWaitForever); // Wait for the signal flag to be set before continuing
-		
-		// Code to toggle the mode after button click 
-		if(is_button_pressed()){ // Checking if the button is pressed 
 			
 		osSignalWait(0x01,osWaitForever); // Waits until flag 0x01 of this thread is set 
 		
@@ -277,5 +269,4 @@ void Button_Thread (void const *argument) {
 		}	 // end while loop
 		
 }
-
 
