@@ -54,17 +54,7 @@ void Blink_LED(uint8_t LED_state,uint8_t LED_colour){
 }
 
 
-// Definition for the function to blink the LED
-void Red_LED(uint8_t LED_state){
-	
-	if(LED_state == 1){ // Checks to see if the request is to turn the LED on or off
-			GPIOD->BSRR = 1<<14; // Turn on the red LED
-	}
-	else{
-			GPIOD->BSRR = 1<<(14+16); // Turn off the red LED
-	}
-			
-}
+
 
 // INIT SPI
 void Init_SPI(void){
@@ -146,13 +136,23 @@ uint16_t read_accel(uint8_t reg_axis_address)
 }
 
 bool is_button_pressed(void){
-	bool state = false; //M Declaring a variable which stores button state (1- pressed, 0 - released)
-	if(((GPIOA->IDR & 0x00000001) == 0x00000001) & ((GPIOD->ODR & (1<<14)) != (1<<14)))
-		{ //checking if the button is pressed 
-				state = true;
-		}
-		return state;
-}
+	
+	bool state = false; // Declaring a variable which stores button state (true if pressed, false if released)
+	int ticks;
+	
+	for(ticks=0;ticks<15;ticks++){
+			
+			if(((GPIOA->IDR & 0x00000001) == 0x00000001) & ((GPIOD->ODR & (1<<14)) != (1<<14)))
+				{ //checking if the button is pressed 
+						state = true;
+				}else {
+					state = false ; 
+			}	//end if 
+				
+	} // end for
+	
+	return state;
 
+}
 
 

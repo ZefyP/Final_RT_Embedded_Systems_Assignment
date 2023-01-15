@@ -31,11 +31,9 @@ int main (void) {
 	/* Initialise the threads */
 
 // Initialise the main thread to blink the LED’s
-	//Init_Blink_LED_Thread();
   Init_Tilt_Thread();
-	
-	Init_Button_Thread();
 	Init_Blink_Pattern_Thread();
+	Init_Button_Thread();
 	
 	
 
