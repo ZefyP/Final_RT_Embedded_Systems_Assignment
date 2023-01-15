@@ -33,6 +33,15 @@ void Initialise_LED(void){
 	
 	}
 
+	
+void Initialise_button(void){
+	
+	//Initialise GPIO for push-button
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // Enable Port A clock
+	GPIOA->MODER &= ~GPIO_MODER_MODER0;  // Set GPIOA pin 0 as an input 
+
+}
+
 // Definition for the function to blink the LED
 void Blink_LED(uint8_t LED_state,uint8_t LED_colour){
 	
@@ -43,6 +52,7 @@ void Blink_LED(uint8_t LED_state,uint8_t LED_colour){
 			GPIOD->BSRR = 1<<(LED_colour+16); // Turn off the LED
 	}
 }
+
 
 // Definition for the function to blink the LED
 void Red_LED(uint8_t LED_state){
@@ -99,16 +109,6 @@ void Init_SPI(void){
 
 }
 	
-void Initialise_button(void){
-	
-	//Initialise GPIO for push-button
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // Enable Port A clock
-	GPIOA->MODER &= ~GPIO_MODER_MODER0;  // Set GPIOA pin 0 as an input 
-
-}
-
-
-
 //Defining a function to write LIS3DSH data
 void LIS3DSH_enable(uint8_t register_address, uint8_t enable_address){
 	uint8_t data_to_send_receive[1];  //M Declare an array to store the required LIS3DSH register address or data in. It has only one element as only one address will be accessed in each SPI transaction

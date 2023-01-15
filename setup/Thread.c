@@ -8,13 +8,13 @@ void Blink_LED_Thread (void const *argument); // Declares the main thread functi
 osThreadId tid_Blink_LED_Thread; // Declares an ID that we will associate with the thread and which allows easy reference to it when using some of the OS functions.
 osThreadDef (Blink_LED_Thread, osPriorityNormal, 1, 0); // Declares the main thread object that we will use later. The parameters can be used to adjust certain properties, such as the priority of a thread and how many instances of it exist.
 
-void Button_Thread (void const *argument); // Declares the main thread function that is defined later in the code
-osThreadId tid_Button_Thread; // Declares an ID that we will associate with the thread and which allows easy reference to it when using some of the OS functions.
-osThreadDef (Button_Thread, osPriorityNormal, 1, 0); // Declares the main thread object that we will use later. The parameters can be used to adjust certain properties, such as the priority of a thread and how many instances of it exist.
+void Button_Thread (void const *argument); 
+osThreadId tid_Button_Thread; 
+osThreadDef (Button_Thread, osPriorityNormal, 1, 0); 
 
-void Tilt_Thread (void const *argument); // Declares the main thread function that is defined later in the code
-osThreadId tid_Tilt_Thread; // Declares an ID that we will associate with the thread and which allows easy reference to it when using some of the OS functions.
-osThreadDef (Tilt_Thread, osPriorityNormal, 1, 0); // Declares the main thread object that we will use later. The parameters can be used to adjust certain properties, such as the priority of a thread and how many instances of it exist. 
+void Tilt_Thread (void const *argument);
+osThreadId tid_Tilt_Thread; 
+osThreadDef (Tilt_Thread, osPriorityNormal, 1, 0); 
 
 void Blink_Pattern_Thread (void const *argument);
 osThreadId tid_Blink_Pattern_Thread; 
@@ -76,62 +76,6 @@ void Blink_LED_Thread (void const *argument) {
 
 }
 
-///*-------------------------------------------------------------------------
-// *      Red LED on when button pressed thread Thread
-// *-----------------------------------------------------------------------*/
-// 
-//// Code to define the thread function to initialise the main thread - this initialise function is called from the “main.c” file to start the thread.
-//int Init_Button_Thread (void) {
-
-//  tid_Button_Thread = osThreadCreate (osThread(Button_Thread), NULL); // Creates the main thread object that we have declared and assigns it the thread ID that we have declared.
-//  if(!tid_Button_Thread) return(-1); // Checks to make sure the thread has been created.
-//  
-//  return(0);
-//}
-
-//// Code to define the operation of the main thread. This is effectively the code that was in the infinite FOR loop of our previous blinky program.
-//void Button_Thread (void const *argument) {
-
-//	uint8_t LED_on = 1; // Defines parameter for LED on
-//	uint8_t LED_off = 0; // Defines parameter for LED off
-//  
-//	uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
-//	uint8_t orange_LED = 13; // Defines parameter for orange LED (GPIOD pin 13)
-//	uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
-//	uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
-
-//	
-//// Intro_blink !
-//	Blink_LED(LED_on,blue_LED);
-//	Blink_LED(LED_on,red_LED);
-//	Blink_LED(LED_on,orange_LED);
-//	Blink_LED(LED_on,green_LED);
-//	osDelay(1000);
-//	Blink_LED(LED_off,blue_LED);
-//	Blink_LED(LED_off,red_LED);
-//	Blink_LED(LED_off,orange_LED);
-//	Blink_LED(LED_off,green_LED);
-//	
-//  while (1) { // Creates an infinite loop so that the blinking never terminates
-//		
-//		// Checks the state of the push-button and only turns the red LED on if the button has only just been pressed, which is indicated by the state of the red LED. 
-//		if(((GPIOA->IDR & 0x00000001) == 0x00000001) & ((GPIOD->ODR & (1<<red_LED)) != (1<<red_LED))){
-//					
-//			Blink_LED(LED_on,red_LED); // Blinks the red LED on once
-//		
-//		}
-//		// Checks the state of the push-button and only turns the red LED off if the button has only just been released, which is indicated by the state of the red LED. 		
-//		else if(((GPIOA->IDR & 0x00000001) != 0x00000001) & ((GPIOD->ODR & (1<<red_LED)) == (1<<red_LED))){
-//		
-//			Blink_LED(LED_off,red_LED); // Turn red LED off
-//			
-//		}		
-//		osThreadYield(); // This function tells the RTOS that when the thread gets to this stage the RTOS should suspend this thread and run the next thread that is ready to run. If there is no other thread ready (which is the case with this simple program since we only have one thread) then the calling thread continues. This function effectively forces the RTOS to reschedule and is useful in more complex systems and scheduling policies.
-//		
-//  }
-
-//}
-
 
 
 
@@ -173,12 +117,14 @@ void Tilt_Thread (void const *argument) {
 	int X_mode = 0; //Declare a variable which stores x-axis tilt mode (0 - neutral, -1 - down, 1 - up)
 	LIS3DSH_enable(CTRL4_REG, ENABLE_AXES); 	// Enable the axes for the LIS3DSH accelerometer
 
-	osSignalSet(tid_Blink_LED_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+	osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
 
   while (1) { // Creates an infinite loop so that the blinking never terminates
-		
+		if (flag_state){
 		osSignalWait(0x01,osWaitForever); // Waits until flag 0x01 of this thread is set
-		osSignalSet(tid_Blink_LED_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+		}
+		
+		osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
 
 		// read x and y axis values from the accelerometer
 		
@@ -257,11 +203,6 @@ void Tilt_Thread (void const *argument) {
 
 }
 
-
-
-
-
-
 /*----------------------------------------------------------------------------
  *      Button thread
  *---------------------------------------------------------------------------*/
@@ -278,21 +219,18 @@ void Button_Thread (void const *argument) {
 		
 			if(is_button_pressed()){ // Checking if the button is pressed 
 				while(is_button_pressed()){
-				Blink_LED(1,13);
+				Blink_LED(1,13); //debug indicator that the button is pressed
 				} // Debounce - do nothing while the button is pressed
 			
-			Blink_LED(0,13);
-				
-			osSignalClear(tid_Blink_LED_Thread,0x01); //Clear flag 0x01 of the blink LED thread so that it resumes
-				
-				if (flag_state == false){
-					flag_state = true;
-				}else {
-					flag_state = false; 
-				}
+			Blink_LED(0,13); //turn off indicator
+			
+			osSignalClear(tid_Blink_Pattern_Thread,0x01); // Clear the signal flag to resume the Blink_LED_Thread
+			osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called				
+			
+			flag_state = !flag_state; // toggle the flag state
 				
 			}else if( !is_button_pressed() ){
-				osSignalSet(tid_Blink_LED_Thread,0x01); // Set flag 0x01 of the blink LED thread so that it resumes
+			 //do nothing	
 			}
 
 		osThreadYield(); // This function tells the RTOS that when the thread gets to this stage the RTOS should suspend this thread and run the next thread that is ready to run. If there is no other thread ready (which is the case with this simple program since we only have one thread) then the calling thread continues. This function effectively forces the RTOS to reschedule and is useful in more complex systems and scheduling policies.	
@@ -358,4 +296,63 @@ void Blink_Pattern_Thread (void const *argument) {
 	}
 }
 
+
+
+
+
+///*-------------------------------------------------------------------------
+// *      Red LED on when button pressed thread Thread
+// *-----------------------------------------------------------------------*/
+// 
+//// Code to define the thread function to initialise the main thread - this initialise function is called from the “main.c” file to start the thread.
+//int Init_Button_Thread (void) {
+
+//  tid_Button_Thread = osThreadCreate (osThread(Button_Thread), NULL); // Creates the main thread object that we have declared and assigns it the thread ID that we have declared.
+//  if(!tid_Button_Thread) return(-1); // Checks to make sure the thread has been created.
+//  
+//  return(0);
+//}
+
+//// Code to define the operation of the main thread. This is effectively the code that was in the infinite FOR loop of our previous blinky program.
+//void Button_Thread (void const *argument) {
+
+//	uint8_t LED_on = 1; // Defines parameter for LED on
+//	uint8_t LED_off = 0; // Defines parameter for LED off
+//  
+//	uint8_t green_LED = 12; // Defines parameter for green LED (GPIOD pin 12)
+//	uint8_t orange_LED = 13; // Defines parameter for orange LED (GPIOD pin 13)
+//	uint8_t red_LED = 14; // Defines parameter for red LED (GPIOD pin 14)
+//	uint8_t blue_LED = 15; // Defines parameter for blue LED (GPIOD pin 15)
+
+//	
+//// Intro_blink !
+//	Blink_LED(LED_on,blue_LED);
+//	Blink_LED(LED_on,red_LED);
+//	Blink_LED(LED_on,orange_LED);
+//	Blink_LED(LED_on,green_LED);
+//	osDelay(1000);
+//	Blink_LED(LED_off,blue_LED);
+//	Blink_LED(LED_off,red_LED);
+//	Blink_LED(LED_off,orange_LED);
+//	Blink_LED(LED_off,green_LED);
+//	
+//  while (1) { // Creates an infinite loop so that the blinking never terminates
+//		
+//		// Checks the state of the push-button and only turns the red LED on if the button has only just been pressed, which is indicated by the state of the red LED. 
+//		if(((GPIOA->IDR & 0x00000001) == 0x00000001) & ((GPIOD->ODR & (1<<red_LED)) != (1<<red_LED))){
+//					
+//			Blink_LED(LED_on,red_LED); // Blinks the red LED on once
+//		
+//		}
+//		// Checks the state of the push-button and only turns the red LED off if the button has only just been released, which is indicated by the state of the red LED. 		
+//		else if(((GPIOA->IDR & 0x00000001) != 0x00000001) & ((GPIOD->ODR & (1<<red_LED)) == (1<<red_LED))){
+//		
+//			Blink_LED(LED_off,red_LED); // Turn red LED off
+//			
+//		}		
+//		osThreadYield(); // This function tells the RTOS that when the thread gets to this stage the RTOS should suspend this thread and run the next thread that is ready to run. If there is no other thread ready (which is the case with this simple program since we only have one thread) then the calling thread continues. This function effectively forces the RTOS to reschedule and is useful in more complex systems and scheduling policies.
+//		
+//  }
+
+//}
 

@@ -37,6 +37,7 @@ int main (void) {
 	Init_Button_Thread();
 	Init_Blink_Pattern_Thread();
 	
+	
 
 	osKernelStart ();	// start thread execution 
 	
