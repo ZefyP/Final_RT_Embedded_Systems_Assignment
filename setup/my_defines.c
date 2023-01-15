@@ -48,17 +48,8 @@ void Initialise_LED(void){
 		}
 }
 
-// Definition for the function to blink the LED
-void Red_LED(uint8_t LED_state){
-	
-	if(LED_state == 1){ // Checks to see if the request is to turn the LED on or off
-			GPIOD->BSRR = 1<<14; // Turn on the red LED
-	}
-	else{
-			GPIOD->BSRR = 1<<(14+16); // Turn off the red LED
-	}
-			
-}
+
+
 
 /*-------------------------------------------------------------------------
  *  Button Interrupt functions
@@ -212,5 +203,24 @@ uint16_t read_accel(uint8_t reg_axis_address)
 	return val; 
 }
 
+bool is_button_pressed(void){
+	
+	bool state = false; // Declaring a variable which stores button state (true if pressed, false if released)
+	int ticks;
+	
+	for(ticks=0;ticks<15;ticks++){
+			
+			if(((GPIOA->IDR & 0x00000001) == 0x00000001) & ((GPIOD->ODR & (1<<14)) != (1<<14)))
+				{ //checking if the button is pressed 
+						state = true;
+				}else {
+					state = false ; 
+			}	//end if 
+				
+	} // end for
+	
+	return state;
+
+}
 
 
