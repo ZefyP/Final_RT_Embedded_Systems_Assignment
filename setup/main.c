@@ -14,10 +14,14 @@ int main (void) {
 	
 	SystemCoreClockUpdate();
   
+	// Initialise and enable the button interrupt to switch modes
+	Init_Interrupt();
+	Enable_Interrupt();
+	
 	/* Initialise the SPI communication with the LIS3DSH accelerometer */
 	Init_SPI();
 	
-  /* Initialize CMSIS-RTOS */
+  /* Initialise CMSIS-RTOS */
 	osKernelInitialize ();	
 	
 	
@@ -34,8 +38,8 @@ int main (void) {
 	//Init_Blink_LED_Thread();
   Init_Tilt_Thread();
 	
-	Init_Button_Thread();
-	Init_Blink_Pattern_Thread();
+	// Init_Button_Thread();
+	 Init_Blink_Pattern_Thread();
 	
 	
 
