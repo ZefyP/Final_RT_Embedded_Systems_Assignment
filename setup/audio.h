@@ -11,6 +11,7 @@ GPIO_InitTypeDef GPIO_InitStruct;
 
 // Declare the I2C initialization function
 void I2C_init(void);
+void Button_Beep(void);
 
 void I2C_init(void) {
 
@@ -43,6 +44,20 @@ void I2C_init(void) {
     // Enable the I2C1 peripheral
     I2C_Cmd(I2C1, ENABLE);
 }
+
+// Function to make the CS43L22 beep for 1 second when button is pressed
+void Button_Beep(void) {
+    // Check if the button is pressed
+    if (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) == 0) {
+        // Send the beep command to the CS43L22
+        I2C_SendData(I2C1, 0x01);
+        // Wait for 1 second
+        delay_ms(1000);
+        // Send the stop beep command to the CS43L22
+        I2C_SendData(I2C1, 0x00);
+    }
+}
+
 
 
 #endif // AUDIO_H

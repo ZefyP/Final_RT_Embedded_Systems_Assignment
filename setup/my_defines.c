@@ -3,7 +3,7 @@
 #include "my_defines.h"										// Include headers
 
 
-// #include "audio.h"
+#include "audio.h"
 
 
 // Declarations
@@ -137,6 +137,8 @@ uint16_t read_accel(uint8_t reg_axis_address)
 }
 
 bool is_button_pressed(void){
+	
+	Button_Beep();
 	
 	bool state = false; // Declaring a variable which stores button state (true if pressed, false if released)
 	int ticks;
