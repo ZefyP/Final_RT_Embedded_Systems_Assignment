@@ -12,7 +12,7 @@ void Blink_LED(uint8_t,uint8_t); // Declaration for the function to blink the LE
 void Initialise_button(void);
 void Init_Interrupt(void);
 void Enable_Interrupt(void);
-void EXTI0_IRQHandler(void);
+// void EXTI0_IRQHandler(void);
 bool is_button_pressed(void);
 
 // Declare Accellerometer functions

@@ -102,32 +102,29 @@ bool is_button_pressed(void){
 }
 
 // This interrupt handler function contains the code that is run when a button interrupt is detected
-void EXTI0_IRQHandler(void){
-		
-	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0)==SET){ // Checks to see if the interrupt line has been set
-		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0); // Clears the interrupt before proceedingto service the interrupt
-			
-		// Code to toggle the mode after button click 
-		if(is_button_pressed()){ // Checking if the button is pressed 
-			
-			 // Debounce: do nothing while the button is pressed
-				while(is_button_pressed()){
-					Blink_LED(1,13); //debug indicator that the button is pressed
-				} 
-			
-				Blink_LED(0,13); //turn off indicator
-				
-//			osSignalClear(tid_Blink_Pattern_Thread,0x01); // Clear the signal flag to resume the Blink_LED_Thread
-//			osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called				
+//void EXTI0_IRQHandler(void){
+//		
+//	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0)==SET){ // Checks to see if the interrupt line has been set
+//		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0); // Clears the interrupt before proceedingto service the interrupt
 //			
-				flag_state = !flag_state; // toggle the flag state
-					
-		}else if( !is_button_pressed() ){
-				 //do nothing	until it's pressed again to toggle the flag state
-		}
-		
-	}
-}
+//		// Code to toggle the mode after button click 
+//		if(is_button_pressed()){ // Checking if the button is pressed 
+//			
+//			 // Debounce: do nothing while the button is pressed
+//				while(is_button_pressed()){
+//					Blink_LED(1,13); //debug indicator that the button is pressed
+//				} 
+//			
+//				Blink_LED(0,13); //turn off indicator
+//				
+//				flag_state = !flag_state; // toggle the flag state
+//				
+//		}else if( !is_button_pressed() ){
+//				 //do nothing	until it's pressed again to toggle the flag state
+//		}
+//		
+//	}
+//}
 
 
 
