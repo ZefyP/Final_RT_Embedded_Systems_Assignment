@@ -12,8 +12,10 @@
 
 
 int main (void) {
-  	
-  /* Initialise the SPI communication with the LIS3DSH accelerometer */
+	
+	SystemCoreClockUpdate();
+  
+	/* Initialise the SPI communication with the LIS3DSH accelerometer */
 	Init_SPI();
 	
   /* Initialize CMSIS-RTOS */

@@ -26,11 +26,11 @@ osThreadDef (Tilt_Thread, osPriorityNormal, 1, 0); // Declares the main thread o
 #define OUT_X_H_REG	0x29
 #define OUT_X_L_REG	0x28
 
-
-#define Y_DEADZONE_L -2000
-#define Y_DEADZONE_H  2000 //deadzone values differ due to accelerometer calibration 
-#define X_DEADZONE_L -1500
-#define X_DEADZONE_H  1500
+// deadzone values differ due to accelerometer calibration
+#define Y_DEADZONE_L -2000 // Blue LED  
+#define Y_DEADZONE_H  2000 // Orange LED
+#define X_DEADZONE_L -5  // Green LED
+#define X_DEADZONE_H  500  // Red LED
 /*-------------------------------------------------------------------------
  *      Blink LED Thread
  *-----------------------------------------------------------------------*/
@@ -156,54 +156,55 @@ void Tilt_Thread (void const *argument) {
 	
 	int16_t x_high_val = 0; 
 	int16_t x_low_val = 0;
-	int16_t x_val = 0; //combined value 
+	int16_t x_val = 0; // combined value of high and low x-axis values
 	
 	int16_t y_high_val = 0;
 	int16_t y_low_val = 0;
-	int16_t y_val = 0; //combined value 
+	int16_t y_val = 0; // combined value of high and low y-axis values
 	
 	
 	int Y_mode = 0; //Declare a variable which stores y-axis tilt mode (0 - neutral, -1 - down, 1 - up)
 	int X_mode = 0; //Declare a variable which stores x-axis tilt mode (0 - neutral, -1 - down, 1 - up)
-	LIS3DSH_enable(CTRL4_REG, ENABLE_AXES); 	//M Writing new value to LIS3DSH control register 4 (CR4)
+	LIS3DSH_enable(CTRL4_REG, ENABLE_AXES); 	// Enable the axes for the LIS3DSH accelerometer
 
   while (1) { // Creates an infinite loop so that the blinking never terminates
 		
 		//get_orientation();
 		// update_LEDs();
-		 // read x and y axis values from the accelerometer
+		// read x and y axis values from the accelerometer
 
 		
-		x_high_val = read_accel(OUT_X_H_REG);
-		x_low_val = read_accel(OUT_X_L_REG);
+		x_high_val = read_accel(OUT_X_H_REG); // read high byte of the x-axis value from the accelerometer
+		x_low_val = read_accel(OUT_X_L_REG);  // read low byte of the x-axis value from the accelerometer
 	
 		// Combine the high and low values into a single 16-bit value 
 		x_val = ((x_high_val << 8) | x_low_val);
 		
-    y_high_val = read_accel(OUT_Y_H_REG);
-		y_low_val = read_accel(OUT_Y_L_REG);
+    y_high_val = read_accel(OUT_Y_H_REG); // read high byte of the y-axis value from the accelerometer
+		y_low_val = read_accel(OUT_Y_L_REG);  // read low byte of the y-axis value from the accelerometer
+		
 		y_val = ((y_high_val << 8) | y_low_val);
 		
 		//Checking y-axis tilt mode
 			if (y_val > Y_DEADZONE_H){
-				Y_mode = 1;
+				Y_mode = 1;  // if y-axis value is above the high deadzone set Y_mode to 1 (tilted up)
 			}
-			else if (y_val < Y_DEADZONE_L){
-				Y_mode = -1;
+			else if (y_val < Y_DEADZONE_L){ //  if y-axis value is below the low deadzone set Y_mode to -1 (tilted down)
+				Y_mode = -1; // if y-axis value is below the low deadzone set Y_mode to -1 (tilted down)
 			}
 			else {
-				Y_mode = 0; 
+				Y_mode = 0;   // if y-axis value is within the deadzone set Y_mode to 0 (neutral)
 			}
 		
 			//Checking x-axis tilt mode
 			if (x_val > X_DEADZONE_H){
-				X_mode = 1;
+				X_mode = 1;  // if x-axis value is above the high deadzone set X_mode to 1 (tilted right)
 			}
 			else if (x_val < X_DEADZONE_L){
-				X_mode = -1;
+				X_mode = -1; // if x-axis value is below the low deadzone set X_mode to -1 (tilted left)
 			}
 			else {
-				X_mode = 0; 
+				X_mode = 0;  // if x-axis value is within the deadzone set X_mode to 0 (neutral)
 			}
 			//Resetting all the LEDs before checking new states
 				Blink_LED(LED_off, green_LED); 
@@ -211,24 +212,24 @@ void Tilt_Thread (void const *argument) {
 				Blink_LED(LED_off, orange_LED);
 				Blink_LED(LED_off, blue_LED);
 
-			//Checking Y and X axes accelerations 
+			//Checking Y and X axes accelerations to determine which LEDs to turn on
 			if (Y_mode == -1 && X_mode == 1){
 					Blink_LED(LED_on, blue_LED);  
 					Blink_LED(LED_on, red_LED);
 			}
 			else if (Y_mode == -1){
-				Blink_LED(LED_on, blue_LED); //M Turn on blue LED if the value is negative
+				Blink_LED(LED_on, blue_LED); // Turn on blue LED if the value is negative
 				
 			}
 			else if (Y_mode == 1){
-				Blink_LED(LED_on, orange_LED); //M Turn on blue LED if the value is negative
+				Blink_LED(LED_on, orange_LED); // Turn on blue LED if the value is negative
 		
 			}
 			else if (X_mode == -1){
-				Blink_LED(LED_on, green_LED); //M Turn on blue LED if the value is negative
+				Blink_LED(LED_on, green_LED); // Turn on blue LED if the value is negative
 			}
 			else if (X_mode == 1){
-				Blink_LED(LED_on, red_LED); //M Turn on blue LED if the value is negative
+				Blink_LED(LED_on, red_LED); // Turn on blue LED if the value is negative
 			}
 			else if (Y_mode == -1 && X_mode == 1){
 					Blink_LED(LED_on, blue_LED);  
@@ -241,21 +242,8 @@ void Tilt_Thread (void const *argument) {
 				Blink_LED(LED_off, blue_LED);
 		
 			}
-
-//	//Checking Y-axis acceleration
-//			if (y_val < Y_THRESHOLD_L){
-//				Blink_LED(LED_on, blue_LED); //M Turn on blue LED if the value is negative
-//				
-//			}
-//			else if (y_val > Y_THRESHOLD_H){
-//				Blink_LED(LED_on, blue_LED); //M Turn on blue LED if the value is negative
-//			
-//			}
-//			else {							//all LEDs off if the board is placed horizontally
-//				Blink_LED(LED_on, red_LED); //M Turn on blue LED if the value is negative
-//			
-//			}
-//	
+			
+	
 		osThreadYield(); // This function tells the RTOS that when the thread gets to this stage the RTOS should suspend this thread and run the next thread that is ready to run. If there is no other thread ready (which is the case with this simple program since we only have one thread) then the calling thread continues. This function effectively forces the RTOS to reschedule and is useful in more complex systems and scheduling policies.
 		
   }
