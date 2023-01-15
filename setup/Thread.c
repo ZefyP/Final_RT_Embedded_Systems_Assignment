@@ -115,16 +115,16 @@ void Tilt_Thread (void const *argument) {
 	
 	int Y_mode = 0; //Declare a variable which stores y-axis tilt mode (0 - neutral, -1 - down, 1 - up)
 	int X_mode = 0; //Declare a variable which stores x-axis tilt mode (0 - neutral, -1 - down, 1 - up)
+	
 	LIS3DSH_enable(CTRL4_REG, ENABLE_AXES); 	// Enable the axes for the LIS3DSH accelerometer
-
-	osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+	osSignalSet(tid_Tilt_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
 
   while (1) { // Creates an infinite loop so that the blinking never terminates
 		if (flag_state){
 		osSignalWait(0x01,osWaitForever); // Waits until flag 0x01 of this thread is set
 		}
 		
-		osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+		osSignalSet(tid_Tilt_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
 
 		// read x and y axis values from the accelerometer
 		
@@ -263,7 +263,7 @@ void Blink_Pattern_Thread (void const *argument) {
   while (1) { //infinite loop for the function to never terminate
 			
 		osSignalWait(0x01,osWaitForever); // Waits until flag 0x01 of this thread is set 
-		osSignalSet(tid_Blink_LED_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+		osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
 		
 		if ( flag_state == true){ //checking the flag state set by the push button
 	
