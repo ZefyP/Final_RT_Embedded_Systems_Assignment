@@ -1,7 +1,6 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
-
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_i2c.h"
 
@@ -9,10 +8,11 @@
 I2C_InitTypeDef I2C_InitStruct;
 GPIO_InitTypeDef GPIO_InitStruct;
 
-// Declare the I2C initialization function
+// Declarations
 void I2C_init(void);
 void Button_Beep(void);
 
+// Declare the I2C initialization function
 void I2C_init(void) {
 
     // Enable the clock for the I2C1 peripheral

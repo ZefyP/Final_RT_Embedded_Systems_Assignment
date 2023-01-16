@@ -33,4 +33,3 @@
 .\objects\my_defines.o: C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.16.0\Drivers\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_tim_ex.h
 .\objects\my_defines.o: my_defines.h
 .\objects\my_defines.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
-.\objects\my_defines.o: audio.h

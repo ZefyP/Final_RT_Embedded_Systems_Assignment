@@ -3,7 +3,7 @@
 #include "my_defines.h"										// Include headers
 
 
-#include "audio.h"
+// #include "audio.h"
 
 
 // Declarations
@@ -119,9 +119,9 @@ uint16_t read_accel(uint8_t reg_axis_address)
 {
 	//definitions
 	uint16_t val;
-	uint8_t data_to_send_receive[1];  //M Declare an array to store the required LIS3DSH register address or data in. It has only one element as only one address will be accessed in each SPI transaction
-	uint16_t data_size = 1; //M A variable to specify that only one address is accessed in each transaction
-	uint32_t data_timeout = 1000; //M Set maximum time for SPI transaction to be completed whcih ensures that the program will not freeze in case of problems with SPI channel
+	uint8_t data_to_send_receive[1];  //Array to store the required LIS3DSH register address or data in. It has only one element as only one address will be accessed in each SPI transaction
+	uint16_t data_size = 1; //Specify that only one address is accessed in each transaction
+	uint32_t data_timeout = 1000; // Set max time for SPI transactions to be completed. Ensures that the program will not freeze in case of problem with the SPI communication.
 	
 	// read from register
 	data_to_send_receive[0] = 0x80| reg_axis_address; //M y-axis MSB data register address 
@@ -136,25 +136,27 @@ uint16_t read_accel(uint8_t reg_axis_address)
 	return val; 
 }
 
+
+// Code to check the button status
 bool is_button_pressed(void){
 	
-	Button_Beep();
+//	Button_Beep(); // testing the Beep functionality
 	
 	bool state = false; // Declaring a variable which stores button state (true if pressed, false if released)
 	int ticks;
 	
 	for(ticks=0;ticks<15;ticks++){
 			
+		   // If the button is pressed
 			if(((GPIOA->IDR & 0x00000001) == 0x00000001) & ((GPIOD->ODR & (1<<14)) != (1<<14)))
 				{ //checking if the button is pressed 
-						state = true;
+						state = true; // yes
 				}else {
-					state = false ; 
+					state = false;  // no
 			}	//end if 
 				
-	} // end for
+	} // end for loop
 	
 	return state;
-
 }
 

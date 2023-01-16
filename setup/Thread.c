@@ -20,7 +20,7 @@ void Blink_Pattern_Thread (void const *argument);
 osThreadId tid_Blink_Pattern_Thread; 
 osThreadDef (Blink_Pattern_Thread, osPriorityNormal, 1, 0); 
 
-// for Accel register and SPI comms
+// register addresses for Accelerations 
 #define CTRL4_REG	0x20
 #define ENABLE_AXES	0x17
 #define OUT_Y_H_REG	0x2B
@@ -69,18 +69,18 @@ void Tilt_Thread (void const *argument) {
 	int16_t y_val = 0; // combined value of high and low y-axis values
 	
 	
-	int Y_mode = 0; //Declare a variable which stores y-axis tilt mode (0 - neutral, -1 - down, 1 - up)
-	int X_mode = 0; //Declare a variable which stores x-axis tilt mode (0 - neutral, -1 - down, 1 - up)
+	int Y_mode = 0; //Declare a variable which stores y-axis tilt mode (0 is neutral, -1 is down, 1 is up)
+	int X_mode = 0; //Declare a variable which stores x-axis tilt mode (0 is neutral, -1 is down, 1 is up)
 	
 	LIS3DSH_enable(CTRL4_REG, ENABLE_AXES); 	// Enable the axes for the LIS3DSH accelerometer
 
 	osSignalSet(tid_Tilt_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
 
-  while (1) { // Creates an infinite loop so that the blinking never terminates
+  while (1) { // Creates an infinite loop 
 		
-		if (flag_state == false){
+		if (flag_state == false){ // if tilt mode ON
 		
-				osSignalSet(tid_Tilt_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+				osSignalSet(tid_Tilt_Thread,0x01);// Set flag 0x01 of the thread so that it resumes next time wait is called
 
 				// read x and y axis values from the accelerometer
 				
@@ -88,30 +88,30 @@ void Tilt_Thread (void const *argument) {
 				x_low_val = read_accel(OUT_X_L_REG); 			 	  // read low byte of the x-axis value from the accelerometer
 				x_val = ((x_high_val << 8) | x_low_val);	 		// Combine the high and low values into a single 16-bit value 
 				
-				y_high_val = read_accel(OUT_Y_H_REG); // read high byte of the y-axis value from the accelerometer
-				y_low_val = read_accel(OUT_Y_L_REG);  // read low byte of the y-axis value from the accelerometer
-				y_val = ((y_high_val << 8) | y_low_val);
+				y_high_val = read_accel(OUT_Y_H_REG); 				// read high byte of the y-axis value from the accelerometer
+				y_low_val = read_accel(OUT_Y_L_REG);  				// read low byte of the y-axis value from the accelerometer
+				y_val = ((y_high_val << 8) | y_low_val);			// Combine the high and low bytes
 				
-				//Checking y-axis tilt mode
+				// Checking y-axis tilt mode
 					if (y_val > Y_DEADZONE_H){
-						Y_mode = 1;  // if y-axis value is above the high deadzone set Y_mode to 1 (tilted up)
+						Y_mode = 1;  // (tilt up) if y-axis value is above the high deadzone set Y_mode to 1 
 					}
 					else if (y_val < Y_DEADZONE_L){ //  if y-axis value is below the low deadzone set Y_mode to -1 (tilted down)
-						Y_mode = -1; // if y-axis value is below the low deadzone set Y_mode to -1 (tilted down)
+						Y_mode = -1; //(tilt down) if y-axis value is below the low deadzone set Y_mode to -1 
 					}
 					else {
-						Y_mode = 0;   // if y-axis value is within the deadzone set Y_mode to 0 (neutral)
+						Y_mode = 0;   //(neutral)if y-axis value is within the deadzone set Y_mode to 0 
 					}
 				
-				//Checking x-axis tilt mode
+				// Checking x-axis tilt mode
 					if (x_val > X_DEADZONE_H){
-						X_mode = 1;  // if x-axis value is above the high deadzone set X_mode to 1 (tilted right)
+						X_mode = 1;  // (tilt right) if x-axis value is above the high deadzone set X_mode to 1 
 					}
 					else if (x_val < X_DEADZONE_L){
-						X_mode = -1; // if x-axis value is below the low deadzone set X_mode to -1 (tilted left)
+						X_mode = -1; //(tilt left) if x-axis value is below the low deadzone set X_mode to -1 
 					}
 					else {
-						X_mode = 0;  // if x-axis value is within the deadzone set X_mode to 0 (neutral)
+						X_mode = 0;  // (neutral) if x-axis value is within the deadzone set X_mode to 0 
 					}
 					
 					//Resetting all the LEDs before checking new states
@@ -121,19 +121,19 @@ void Tilt_Thread (void const *argument) {
 						Blink_LED(LED_off, blue_LED);
 
 					//Checking Y and X axes accelerations to determine which LEDs to turn on
+					// Y Axis
 					if (Y_mode == -1 && X_mode == 1){
 							Blink_LED(LED_on, blue_LED);  
 							Blink_LED(LED_on, red_LED);
 					}
 					else if (Y_mode == -1){
 						Blink_LED(LED_on, blue_LED); // Turn on blue LED if the value is negative
-						
 					}
 					else if (Y_mode == 1){
 						Blink_LED(LED_on, orange_LED); // Turn on blue LED if the value is negative
-				
 					}
 					
+					// X Axis
 					if (X_mode == -1){
 						Blink_LED(LED_on, green_LED); // Turn on blue LED if the value is negative
 					}
@@ -144,15 +144,14 @@ void Tilt_Thread (void const *argument) {
 							Blink_LED(LED_on, blue_LED);  
 							Blink_LED(LED_on, red_LED);
 					}
-					else {							//all LEDs off if the board is placed horizontally
+					else {							// all LEDs off if the board is placed horizontally
 						Blink_LED(LED_off, green_LED); 
 						Blink_LED(LED_off, red_LED); 
 						Blink_LED(LED_off, orange_LED);
 						Blink_LED(LED_off, blue_LED);
-				
 					}
 			
-		}else {
+		}else { // if tilt mode OFF, turn Pattern mode ON
 			
 			osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
 			osSignalWait(0x01,osWaitForever); // Waits until flag 0x01 of this thread is set
@@ -178,23 +177,23 @@ int Init_Blink_Pattern_Thread (void) {
 
 void Blink_Pattern_Thread (void const *argument) {
 			
-		uint8_t LED_on = 1; //Parameter to turn on LED
-		uint8_t LED_off = 0; //Parameter to turn off LED 
-		uint8_t green_LED = 12; //Parameter for green LED (GPIOD 12)
-		uint8_t orange_LED = 13; //Parameter for orange LED (GPIOD 13)
-		uint8_t red_LED = 14; //Parameter for red LED (GPIOD 14)
-		uint8_t blue_LED = 15; //Parameter for blue LED (GPIOD 15)
+		uint8_t LED_on = 1;				//Parameter to turn on LED
+		uint8_t LED_off = 0; 			//Parameter to turn off LED 
+		uint8_t green_LED = 12; 	//Parameter for green LED (GPIOD 12)
+		uint8_t orange_LED = 13;	//Parameter for orange LED (GPIOD 13)
+		uint8_t red_LED = 14; 		//Parameter for red LED (GPIOD 14)
+		uint8_t blue_LED = 15; 		//Parameter for blue LED (GPIOD 15)
 			
-		osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+		osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the thread so that it resumes next time wait is called
 
 	
   while (1) { //infinite loop for the function to never terminate
 			
 		osSignalWait(0x01,osWaitForever); // Waits until flag 0x01 of this thread is set 
+		//check the flag state set by the push button
+		if ( flag_state == true){  // if Pattern mode On
 		
-		if ( flag_state == true){ //checking the flag state set by the push button
-		
-			osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
+			osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the thread so that it resumes next time wait is called
 			
 			Blink_LED(LED_on, green_LED); //Turns on green LED
 			Blink_LED(LED_on, red_LED); //Turns on red LED
@@ -210,14 +209,14 @@ void Blink_Pattern_Thread (void const *argument) {
 			
 			osDelay(500); //0.5 second delay 
     }
-		else {
+		else { // if Pattern mode Off
 			
+			// Turn all LEDs OFF
 			Blink_LED(LED_off, green_LED); //Turns off green LED
 			Blink_LED(LED_off, red_LED); //Turns off red LED
 			Blink_LED(LED_off, orange_LED); //Turns on orange LED
 			Blink_LED(LED_off, blue_LED); //Turns on blue LED
 		
-				
 			osSignalSet(tid_Blink_Pattern_Thread,0x01);// Set flag 0x01 of the blink LED thread so that it resumes next time wait is called
 			osSignalWait(0x01,osWaitForever); // Waits until flag 0x01 of this thread is set
 			

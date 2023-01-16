@@ -1,5 +1,5 @@
 /*-------------------------------------------------------------------------
- * CMSIS-RTOS 'main' function - Blinky
+ * CMSIS-RTOS main function
  *-----------------------------------------------------------------------*/
 
 #define osObjectsPublic                   // Define objects in main module
@@ -7,7 +7,7 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal.h" 								// Define the hal modules
 
-#include "my_defines.h"
+#include "my_defines.h"										// Define the utilities library
 #include "Thread.h"
 
 int main (void) {
@@ -37,7 +37,7 @@ int main (void) {
 	
 	
 
-	osKernelStart ();	// start thread execution 
+	osKernelStart ();	// start the thread execution 
 	
 	while(1){}; // While loop so the program doesn?t terminate
 }
